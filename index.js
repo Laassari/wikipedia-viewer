@@ -1,4 +1,4 @@
-const htmlWrapper = document.querySelector('.wrapper')
+const htmlArticlesWrapper = document.querySelector('.wrapper')
 const searchButton = document.getElementById('search')
 const searchInput = document.getElementById('searchbox')
 
@@ -13,33 +13,33 @@ searchInput.addEventListener('keypress', e => {
 function handleSearch(searchTerm) {
   if (searchTerm.trim() == "") return
   
-  fetch(getUrl(searchTerm.trim()))
+  fetch(getDescriptionUrl(searchTerm.trim()))
   .then(data => data.json())
   .then(data => {
-    if (!data.query) {
-      htmlWrapper.innerHTML = `<h1 class="center">No results to show! 😞</h1>`
+    if (!data.query) { //no results are returned
+      htmlArticlesWrapper.innerHTML = `<h1 class="center">No results to show! 😞</h1>`
       return
     }
     renderArticles(data.query.pages)
   })
-  .catch(err => { htmlWrapper.innerHTML = `<h1 class="center">Network error occured! 🤒</h1>`})
+  .catch(err => { htmlArticlesWrapper.innerHTML = `<h1 class="center">Network error occured! 🤒</h1>`})
 }
 
 function renderArticles(pagesObj) {
-  htmlWrapper.innerHTML = ''
+  htmlArticlesWrapper.innerHTML = ''
   for (const i in pagesObj) {
-    const div = document.createElement('article')
-    div.innerHTML = `<h1>${pagesObj[i].title}</h1>
+    const article = document.createElement('article')
+    article.innerHTML = `<h1>${pagesObj[i].title}</h1>
     <img src="${!!pagesObj[i].thumbnail? pagesObj[i].thumbnail.source: ''}"/>
     <p>${pagesObj[i].extract}
-    <span><a href="${getArticleById(pagesObj[i].pageid)}" class="new-tab" target="_blank">read the full article</a></span>
+    <span><a href="${getArticleUrlById(pagesObj[i].pageid)}" class="new-tab" target="_blank">read the full article</a></span>
     </p>
     `
-    htmlWrapper.appendChild(div)
+    htmlArticlesWrapper.appendChild(article)
   }
 }
 
-function getArticleById(id){
+function getArticleUrlById(id){
   return `https://en.wikipedia.org/?curid=${id}`
 }
 
@@ -47,15 +47,15 @@ function getFullArticleByTitle (title) {
   return `https://en.wikipedia.org/api/rest_v1/page/summary/${title}`
 }
 function renderFullArticle(articleObj) {
-  return  
+  //TODO: implement
 }
 
 function requestFullArticle() {
-
+  //TODO: implement (ie: fetch)  
 }
 
 //get url for a one line description
-function getUrl(term) {
+function getDescriptionUrl(term) {
   const url = 'https://en.wikipedia.org/w/api.php?format=json&action=query&generator=search&gsrnamespace=0&gsrlimit=10&prop=pageimages|extracts&pilimit=max&exintro&explaintext&exsentences=1&exlimit=max&origin=*&gsrsearch='
   return `${url}${term}`
 }
