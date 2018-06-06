@@ -158,6 +158,13 @@ footer a {
   color: #fff;
   padding: 5px
 }
+.full-article article {
+  padding: 10px;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  color: #263238;
+}
+
 .action-bar {
   display: flex;
   justify-content: space-between;
