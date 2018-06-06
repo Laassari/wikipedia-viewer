@@ -138,6 +138,9 @@ footer a {
   transform-origin: bottom;
   will-change: transform;
   transition: transform 0.2s ease-in;
+  box-shadow: 0 0 1px 0px #00000033, 
+              0 0 3px 0px #0000003b, 
+              0 0 10px 0px #000000a8;
 }
 .full-article-expand {
   transform: scale(1, 1)
