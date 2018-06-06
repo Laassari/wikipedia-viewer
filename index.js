@@ -1,6 +1,12 @@
 const htmlArticlesWrapper = document.querySelector('.wrapper')
 const searchButton = document.getElementById('search')
 const searchInput = document.getElementById('searchbox')
+const fullArticleWrapper = document.querySelector('.full-article')
+//vars related to the full article
+const hero = fullArticleWrapper.querySelector('.hero')
+const headding = fullArticleWrapper.querySelector('.hero h1')
+const fullArticle = fullArticleWrapper.querySelector('article')
+const backButton = document.querySelector('.back')
 
 searchButton.addEventListener('click', _ => handleSearch (searchInput.value))
 
@@ -8,7 +14,18 @@ searchInput.addEventListener('keypress', e => {
   if (e.keyCode == 13) handleSearch (searchInput.value)
 })
 
+htmlArticlesWrapper.addEventListener('click', e => {
+  if (e.target.nodeName == "ARTICLE" || e.target.closest('.wrapper article')) {
+    //an article or a child is the target
+    const title = e.target.closest('.wrapper article').dataset.title
+    requestFullArticle(title)
+      .then(article => renderFullArticle(article))
+  }
+}) 
 
+backButton.addEventListener('click', () => { //hide the full article
+  fullArticleWrapper.classList.remove('full-article-expand')
+})
 /* you can use fetch but add &origin=* to avoid "No 'Access-Control-Allow-Origin'" errors */
 function handleSearch(searchTerm) {
   if (searchTerm.trim() == "") return
@@ -29,6 +46,7 @@ function renderArticles(pagesObj) {
   htmlArticlesWrapper.innerHTML = ''
   for (const i in pagesObj) {
     const article = document.createElement('article')
+    article.dataset.title = pagesObj[i].title
     article.innerHTML = `<h1>${pagesObj[i].title}</h1>
     <img src="${!!pagesObj[i].thumbnail? pagesObj[i].thumbnail.source: ''}"/>
     <p>${pagesObj[i].extract}
@@ -44,14 +62,35 @@ function getArticleUrlById(id){
 }
 
 function getFullArticleByTitle (title) {
+  //this url gets little results but with images
   return `https://en.wikipedia.org/api/rest_v1/page/summary/${title}`
 }
-function renderFullArticle(articleObj) {
-  //TODO: implement
+function getFullArticleByTitleWithImages (title) {
+  return `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=&origin=*&titles=${title}`
+}
+function renderFullArticle(articleObj={}) {
+  hero.style.backgroundImage = `linear-gradient( #5454544f, #000000ab ), 
+                          url(${ articleObj.thumbnail || "default.png"})`
+  headding.textContent = articleObj.title
+  fullArticle.innerHTML = articleObj.extract
+
+  fullArticleWrapper.classList.add('full-article-expand') //finally show the content
+
 }
 
-function requestFullArticle() {
-  //TODO: implement (ie: fetch)  
+function requestFullArticle(title) {
+  return Promise.all([  fetch(getFullArticleByTitle(title)),   fetch(getFullArticleByTitleWithImages(title))])
+  .then(responses => Promise.all(responses.map(res => res.json())))
+  .then(jsn => {
+    const title = jsn[0].title
+    const thumbnail = jsn[0].thumbnail.source
+    const extract =  Object.values(jsn[1].query.pages)[0].extract
+    return {
+      title,
+      thumbnail,
+      extract
+    }
+  })
 }
 
 //get url for a one line description
