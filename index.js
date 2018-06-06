@@ -83,7 +83,7 @@ function requestFullArticle(title) {
   .then(responses => Promise.all(responses.map(res => res.json())))
   .then(jsn => {
     const title = jsn[0].title
-    const thumbnail = jsn[0].thumbnail.source
+    const thumbnail = jsn[0].thumbnail && jsn[0].thumbnail.source
     const extract =  Object.values(jsn[1].query.pages)[0].extract
     return {
       title,
