@@ -70,20 +70,6 @@ nav a {
   position: relative;
 }
 
-.new-tab {
-
-}
-.new-tab:after {
-  content: '';
-  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NzYgNTEyIj48cGF0aCBkPSJNNTc2IDI0djEyNy45ODRjMCAyMS40NjEtMjUuOTYgMzEuOTgtNDAuOTcxIDE2Ljk3MWwtMzUuNzA3LTM1LjcwOS0yNDMuNTIzIDI0My41MjNjLTkuMzczIDkuMzczLTI0LjU2OCA5LjM3My0zMy45NDEgMGwtMjIuNjI3LTIyLjYyN2MtOS4zNzMtOS4zNzMtOS4zNzMtMjQuNTY5IDAtMzMuOTQxTDQ0Mi43NTYgNzYuNjc2bC0zNS43MDMtMzUuNzA1QzM5MS45ODIgMjUuOSA0MDIuNjU2IDAgNDI0LjAyNCAwSDU1MmMxMy4yNTUgMCAyNCAxMC43NDUgMjQgMjR6TTQwNy4wMjkgMjcwLjc5NGwtMTYgMTZBMjMuOTk5IDIzLjk5OSAwIDAgMCAzODQgMzAzLjc2NVY0NDhINjRWMTI4aDI2NGEyNC4wMDMgMjQuMDAzIDAgMCAwIDE2Ljk3LTcuMDI5bDE2LTE2QzM3Ni4wODkgODkuODUxIDM2NS4zODEgNjQgMzQ0IDY0SDQ4QzIxLjQ5IDY0IDAgODUuNDkgMCAxMTJ2MzUyYzAgMjYuNTEgMjEuNDkgNDggNDggNDhoMzUyYzI2LjUxIDAgNDgtMjEuNDkgNDgtNDhWMjg3Ljc2NGMwLTIxLjM4Mi0yNS44NTItMzIuMDktNDAuOTcxLTE2Ljk3eiIvPjwvc3ZnPg==);
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  margin-left: 3px;
-  background-repeat: no-repeat;
-  position: absolute;
-}
-
 .wrapper {
   margin: 0 auto;
   max-width: var(--max-document-width);

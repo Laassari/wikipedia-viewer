@@ -58,16 +58,12 @@ function renderArticles(pagesObj) {
     article.innerHTML = `<h1>${pagesObj[i].title}</h1>
     <img src="${!!pagesObj[i].thumbnail? pagesObj[i].thumbnail.source: ''}"/>
     <p>${pagesObj[i].extract}
-    <span><a href="${getArticleUrlById(pagesObj[i].pageid)}" class="new-tab" target="_blank">read the full article</a></span>
     </p>
     `
     htmlArticlesWrapper.appendChild(article)
   }
 }
 
-function getArticleUrlById(id){
-  return `https://en.wikipedia.org/?curid=${id}`
-}
 
 function getFullArticleByTitle (title) {
   //this url gets little results but with images
