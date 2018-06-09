@@ -17,7 +17,16 @@ addEventListener('fetch', event => { //return a copy from the cache or fire a ne
     caches.match(event.request)
     .then(res => {
       if (res) return res
-      return fetch(event.request)
+      else {
+        return fetch(event.request)
+          .then(res => {
+            return caches.open(cacheName)
+              .then(cache => {
+                cache.put(event.request.url, res.clone()) //save the response for future
+                return res // return the fetched data
+              })
+          })
+      }
     })
   )
 })
