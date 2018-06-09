@@ -26,6 +26,14 @@ htmlArticlesWrapper.addEventListener('click', e => {
 backButton.addEventListener('click', () => { //hide the full article
   fullArticleWrapper.classList.remove('full-article-expand')
 })
+
+// Service worker stuff 💪 💪
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js')
+    .then(_ => console.log('success registeration'))
+    .catch(err => console.log(err))
+}
+
 /* you can use fetch but add &origin=* to avoid "No 'Access-Control-Allow-Origin'" errors */
 function handleSearch(searchTerm) {
   if (searchTerm.trim() == "") return
