@@ -86,9 +86,4 @@ gulp.task('clean', (done) => {
 //build
 gulp.task('build', gulp.series('clean', 'styles', 'copy-images', 'html', 'lint', 'uglify', 'serve'))
 
-gulp.task('default', gulp.series('styles', 'lint', 'copy-images', 'html', () => {
-
-  browserSync.init({
-    server: 'dist'
-  })
-}))
+gulp.task('default', gulp.series('styles', 'copy-images', 'html', 'lint', 'uglify'))
