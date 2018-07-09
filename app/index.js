@@ -89,11 +89,12 @@ function requestFullArticle(title) {
     const title = jsn[0].title
     const thumbnail = jsn[0].thumbnail && jsn[0].thumbnail.source
     const extract =  Object.values(jsn[1].query.pages)[0].extract
-    return {
+    window.articleObject = {
       title,
       thumbnail,
       extract
     }
+    return articleObject
   })
 }
 
