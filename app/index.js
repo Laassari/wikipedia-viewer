@@ -8,14 +8,14 @@ const headding = fullArticleWrapper.querySelector('.hero h1')
 const fullArticle = fullArticleWrapper.querySelector('article')
 const backButton = document.querySelector('.back')
 
-searchButton.addEventListener('click', _ => handleSearch (searchInput.value))
+searchButton.addEventListener('click', () => handleSearch (searchInput.value))
 
 searchInput.addEventListener('keypress', e => {
   if (e.keyCode == 13) handleSearch (searchInput.value)
 })
 
 htmlArticlesWrapper.addEventListener('click', e => {
-  if (e.target.nodeName == "ARTICLE" || e.target.closest('.wrapper article')) {
+  if (e.target.nodeName == 'ARTICLE' || e.target.closest('.wrapper article')) {
     //an article or a child is the target
     const title = e.target.closest('.wrapper article').dataset.title
     requestFullArticle(title)
@@ -30,24 +30,24 @@ backButton.addEventListener('click', () => { //hide the full article
 // Service worker stuff 💪 💪
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js')
-    .then(_ => console.log('success registeration'))
+    .then(() => console.log('success registeration'))/*eslint no-console: "off"*/
     .catch(err => console.log(err))
 }
 
 /* you can use fetch but add &origin=* to avoid "No 'Access-Control-Allow-Origin'" errors */
 function handleSearch(searchTerm) {
-  if (searchTerm.trim() == "") return
+  if (searchTerm.trim() == '') return
   
   fetch(getDescriptionUrl(searchTerm.trim()))
   .then(data => data.json())
   .then(data => {
     if (!data.query) { //no results are returned
-      htmlArticlesWrapper.innerHTML = `<h1 class="center">No results to show! 😞</h1>`
+      htmlArticlesWrapper.innerHTML = '<h1 class="center">No results to show! 😞</h1>'
       return
     }
     renderArticles(data.query.pages)
   })
-  .catch(err => { htmlArticlesWrapper.innerHTML = `<h1 class="center">Network error occured! 🤒</h1>`})
+  .catch(() => { htmlArticlesWrapper.innerHTML = '<h1 class="center">Network error occured! 🤒</h1>'})
 }
 
 function renderArticles(pagesObj) {
@@ -56,7 +56,7 @@ function renderArticles(pagesObj) {
     const article = document.createElement('article')
     article.dataset.title = pagesObj[i].title
     article.innerHTML = `<h1>${pagesObj[i].title}</h1>
-    <img src="${!!pagesObj[i].thumbnail? pagesObj[i].thumbnail.source: ''}"/>
+    <img src="${pagesObj[i].thumbnail? pagesObj[i].thumbnail.source: ''}"/>
     <p>${pagesObj[i].extract}
     </p>
     `
@@ -74,7 +74,7 @@ function getFullArticleByTitleWithImages (title) {
 }
 function renderFullArticle(articleObj={}) {
   hero.style.backgroundImage = `linear-gradient( #5454544f, #000000ab ), 
-                          url(${ articleObj.thumbnail || "default.png"})`
+                          url(${ articleObj.thumbnail || 'default.png'})`
   headding.textContent = articleObj.title
   fullArticle.innerHTML = articleObj.extract
 
