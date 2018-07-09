@@ -12,7 +12,7 @@ const sourcemaps = require('gulp-sourcemaps')
 const imagemin = require('gulp-imagemin')
 
 // watch files for changes and reload
-gulp.task('serve', () => {
+gulp.task('serve', (done) => {
   browserSync({
     server: {
       baseDir: 'dist'
@@ -22,31 +22,32 @@ gulp.task('serve', () => {
   gulp.watch(['*.html', 'styles/**/*.css', 'scripts/**/*.js'], {
     cwd: 'dist'
   }, reload)
+  done()
 })
 
 
 //autoprefix styles
-gulp.task('styles', () =>
-  gulp.src('app/style.css')
+gulp.task('styles', (done) => {
+  return gulp.src('app/style.css')
   .pipe(autoprefixer({
     browsers: ['> 1%', 'not dead', ''],
     cascade: false
   }))
   .pipe(minifyCss())
   .pipe(gulp.dest('dist'))
-)
+})
 
 //eslint
-gulp.task('lint', () =>
-  gulp.src('app/*.js')
+gulp.task('lint', (done) =>{
+  return gulp.src('app/*.js')
   .pipe(eslint())
   .pipe(eslint.format())
   .pipe(eslint.failAfterError())
-)
+})
 
 //uglify js
-gulp.task('uglify', () =>
-  gulp.src('app/*.js')
+gulp.task('uglify', (done) => {
+  return gulp.src('app/*.js')
   .pipe(sourcemaps.init())
   .pipe(babel({
     presets: ['env']
@@ -54,48 +55,40 @@ gulp.task('uglify', () =>
   .pipe(uglify())
   .pipe(sourcemaps.write('.'))
   .pipe(gulp.dest('dist'))
-)
+})
 
 //copy html
 gulp.task('html', (done) => {
-  gulp.src('app/index.html')
+  return gulp.src('app/index.html')
     .pipe(htmlmin({
       collapseWhitespace: true
     }))
     .pipe(gulp.dest('dist'))
-  done()
 })
 
 //copy images
 gulp.task('copy-images', (done) => {
-  gulp.src('app/*.png')
+  return gulp.src('app/*.png')
     .pipe(imagemin([
       imagemin.optipng({optimizationLevel: 5})
     ]))
     .pipe(gulp.dest('dist'))
-  done()
 })
 
 //clean dist folder
 gulp.task('clean', (done) => {
-  gulp.src('dist', {
+  return gulp.src('dist', {
       read: false
     })
     .pipe(clean())
-  done()
 })
 
 //build
-gulp.task('build', gulp.series('clean', 'styles', 'copy-images', 'html', 'lint', 'uglify', () => {
-
-  browserSync.init({
-    server: '.dist'
-  })
-}))
+gulp.task('build', gulp.series('clean', 'styles', 'copy-images', 'html', 'lint', 'uglify', 'serve'))
 
 gulp.task('default', gulp.series('styles', 'lint', 'copy-images', 'html', () => {
 
   browserSync.init({
-    server: '.dist'
+    server: 'dist'
   })
 }))
