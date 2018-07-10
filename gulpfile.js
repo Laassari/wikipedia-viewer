@@ -10,7 +10,7 @@ const babel = require('gulp-babel')
 const clean = require('gulp-clean')
 const sourcemaps = require('gulp-sourcemaps')
 const imagemin = require('gulp-imagemin')
-
+const concat = require('gulp-concat')
 // watch files for changes and reload
 gulp.task('serve', (done) => {
   browserSync({
@@ -20,7 +20,7 @@ gulp.task('serve', (done) => {
   })
 
   gulp.watch(['*.html', 'styles/**/*.css', 'scripts/**/*.js'], {
-    cwd: 'dist'
+    cwd: 'app'
   }, reload)
   done()
 })
@@ -49,6 +49,7 @@ gulp.task('lint', (done) =>{
 gulp.task('uglify', (done) => {
   return gulp.src('app/*.js')
   .pipe(sourcemaps.init())
+  .pipe(concat('index.js'))
   .pipe(babel({
     presets: ['env']
   }))
@@ -86,4 +87,4 @@ gulp.task('clean', (done) => {
 //build
 gulp.task('build', gulp.series('clean', 'styles', 'copy-images', 'html', 'lint', 'uglify', 'serve'))
 
-gulp.task('default', gulp.series('styles', 'copy-images', 'html', 'lint', 'uglify'))
+gulp.task('default', gulp.series('styles', 'copy-images', 'html', 'lint', 'uglify', 'lint'))
