@@ -1,3 +1,4 @@
+/*global idb*/
 const htmlArticlesWrapper = document.querySelector('.wrapper')
 const searchButton = document.getElementById('search')
 const searchInput = document.getElementById('searchbox')
@@ -7,6 +8,9 @@ const hero = fullArticleWrapper.querySelector('.hero')
 const headding = fullArticleWrapper.querySelector('.hero h1')
 const fullArticle = fullArticleWrapper.querySelector('article')
 const backButton = document.querySelector('.back')
+let dbPromise //indexedDB
+let articleObject
+const offlineSwitch = document.getElementById('offline-switch')
 
 searchButton.addEventListener('click', () => handleSearch (searchInput.value))
 
@@ -89,12 +93,13 @@ function requestFullArticle(title) {
     const title = jsn[0].title
     const thumbnail = jsn[0].thumbnail && jsn[0].thumbnail.source
     const extract =  Object.values(jsn[1].query.pages)[0].extract
-    window.articleObject = {
+    const articleObj = {
       title,
       thumbnail,
       extract
     }
-    return articleObject
+    articleObject = articleObj
+    return articleObj
   })
 }
 
@@ -102,4 +107,38 @@ function requestFullArticle(title) {
 function getDescriptionUrl(term) {
   const url = 'https://en.wikipedia.org/w/api.php?format=json&action=query&generator=search&gsrnamespace=0&gsrlimit=10&prop=pageimages|extracts&pilimit=max&exintro&explaintext&exsentences=1&exlimit=max&origin=*&gsrsearch='
   return `${url}${term}`
+}
+
+//create a database for articles
+dbPromise = idb.open('articles', 1, upgrade => {
+  upgrade.createObjectStore('article')
+})
+
+offlineSwitch.addEventListener('click', event => {
+  if (!articleObject.title) return //data isn't retrieved yet
+
+  const checked = event.target.checked
+  if (checked) { //add the article to indexedDB
+    saveAricle(articleObject)
+  } else {
+    removeArticle(articleObject)
+  }
+})
+
+//save to indexedDB
+function saveAricle(article) {
+ return dbPromise.then(db => {
+    const tx = db.transaction('article', 'readwrite')
+    const store = tx.objectStore('article')
+    store.put(article, article.title)
+  })
+}
+
+//remove from indexedDB store
+function removeArticle(article) {
+  return dbPromise.then(db => {
+    const tx = db.transaction('article', 'readwrite')
+    const store = tx.objectStore('article')
+    store.delete(article.title)
+  })
 }
