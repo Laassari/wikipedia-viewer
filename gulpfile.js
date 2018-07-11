@@ -19,7 +19,7 @@ gulp.task('serve', (done) => {
     }
   })
 
-  gulp.watch(['*.html', 'styles/**/*.css', 'scripts/**/*.js'], {
+  gulp.watch(['app*.html', 'app/*.css', 'app/*.js'], {
     cwd: 'app'
   }, reload)
   done()
@@ -88,3 +88,8 @@ gulp.task('clean', (done) => {
 gulp.task('build', gulp.series('clean', 'styles', 'copy-images', 'html', 'lint', 'uglify', 'serve'))
 
 gulp.task('default', gulp.series('styles', 'copy-images', 'html', 'lint', 'uglify', 'lint'))
+gulp.task('watch', () => {
+  gulp.watch(['app/*.js'], gulp.series('uglify', 'serve'))
+  gulp.watch(['app/*.css'], gulp.series('styles', 'serve'))
+  gulp.watch(['app/*.html'], gulp.series('html', 'serve'))
+})
