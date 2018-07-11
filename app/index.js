@@ -76,7 +76,15 @@ function getFullArticleByTitle (title) {
 function getFullArticleByTitleWithImages (title) {
   return `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=&origin=*&titles=${title}`
 }
-function renderFullArticle(articleObj={}) {
+async function renderFullArticle(articleObj={}) {
+
+  //mark checkbox checked if article in IDB
+  let isSvaed = await isArticleSaved(articleObject)
+  if (isSvaed) offlineSwitch.checked = true
+  else {
+    offlineSwitch.checked = false
+  }
+
   hero.style.backgroundImage = `linear-gradient( #5454544f, #000000ab ), 
                           url(${ articleObj.thumbnail || 'default.png'})`
   headding.textContent = articleObj.title
@@ -141,4 +149,16 @@ function removeArticle(article) {
     const store = tx.objectStore('article')
     store.delete(article.title)
   })
+}
+
+//check if an article is saved
+async function isArticleSaved(article) {
+    const res = await dbPromise.then(async db => {
+    const tx = db.transaction('article', 'readonly')
+    const store = tx.objectStore('article')
+    let result = await store.get(article.title)
+    return result
+  })
+
+  return res
 }
