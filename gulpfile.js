@@ -45,15 +45,23 @@ gulp.task('lint', (done) =>{
   .pipe(eslint.failAfterError())
 })
 
+//copy SW.js
+gulp.task('sw', (done) => {
+  gulp.src('app/sw.js')
+      .pipe(gulp.dest('dist'))
+      done()
+})
+
+
 //uglify js
 gulp.task('uglify', (done) => {
-  return gulp.src('app/*.js')
+  return gulp.src(['app/*.js', '!app/sw.js'])
   .pipe(sourcemaps.init())
   .pipe(concat('index.js'))
   .pipe(babel({
-    presets: ['env']
+    presets: ['es2017']
   }))
-  .pipe(uglify())
+  // .pipe(uglify())
   .pipe(sourcemaps.write('.'))
   .pipe(gulp.dest('dist'))
 })
@@ -85,11 +93,11 @@ gulp.task('clean', (done) => {
 })
 
 //build
-gulp.task('build', gulp.series('clean', 'styles', 'copy-images', 'html', 'lint', 'uglify', 'serve'))
+gulp.task('build', gulp.series('clean', 'styles', 'copy-images', 'html', 'lint', 'sw', 'uglify', 'serve'))
 
-gulp.task('default', gulp.series('styles', 'copy-images', 'html', 'lint', 'uglify', 'lint'))
+gulp.task('default', gulp.series('styles', 'copy-images', 'html', 'lint', 'sw', 'uglify', 'lint'))
 gulp.task('watch', () => {
-  gulp.watch(['app/*.js'], gulp.series('uglify', 'serve'))
+  gulp.watch(['app/*.js'], gulp.series('uglify', 'sw', 'serve'))
   gulp.watch(['app/*.css'], gulp.series('styles', 'serve'))
   gulp.watch(['app/*.html'], gulp.series('html', 'serve'))
 })
