@@ -18,18 +18,29 @@ searchInput.addEventListener('keypress', e => {
   if (e.keyCode == 13) handleSearch (searchInput.value)
 })
 
-htmlArticlesWrapper.addEventListener('click', e => {
+htmlArticlesWrapper.addEventListener('click', async e => {
   if (e.target.nodeName == 'ARTICLE' || e.target.closest('.wrapper article')) {
     //an article or a child is the target
     const title = e.target.closest('.wrapper article').dataset.title
-    requestFullArticle(title)
-      .then(article => renderFullArticle(article))
+
+    if (navigator.onLine){
+      requestFullArticle(title)
+        .then(article => renderFullArticle(article))
+    } else {
+      const article = await isArticleSaved({title})
+      articleObject = article
+      renderFullArticle(article)
+    }
   }
 }) 
 
 backButton.addEventListener('click', () => { //hide the full article
   fullArticleWrapper.classList.remove('full-article-expand')
 })
+
+//offline/online state
+addEventListener('online', handleNetworkChange)
+addEventListener('offline', handleNetworkChange)
 
 // Service worker stuff 💪 💪
 if ('serviceWorker' in navigator) {
@@ -79,7 +90,7 @@ function getFullArticleByTitleWithImages (title) {
 async function renderFullArticle(articleObj={}) {
 
   //mark checkbox checked if article in IDB
-  let isSvaed = await isArticleSaved(articleObject)
+  let isSvaed = await isArticleSaved(articleObj)
   if (isSvaed) offlineSwitch.checked = true
   else {
     offlineSwitch.checked = false
@@ -99,7 +110,7 @@ function requestFullArticle(title) {
   .then(responses => Promise.all(responses.map(res => res.json())))
   .then(jsn => {
     const title = jsn[0].title
-    const thumbnail = jsn[0].thumbnail && jsn[0].thumbnail.source
+    const thumbnail = jsn[0].thumbnail && jsn[0].thumbnail
     const extract =  Object.values(jsn[1].query.pages)[0].extract
     const articleObj = {
       title,
@@ -161,4 +172,32 @@ async function isArticleSaved(article) {
   })
 
   return res
+}
+
+
+async function handleNetworkChange(event) {
+  const isOnline = event.type === 'online'? true: false
+
+  if (isOnline) {
+
+  } else {
+    const prmt = confirm('you\'re offline! read offline articles?')
+    if (prmt) {
+      const res = await dbPromise.then(async db => {
+        const tx = db.transaction('article', 'readonly')
+        const store = tx.objectStore('article')
+        let result = await store.getAll()
+        return result
+      })
+  
+      const l =   res.map(article => {
+        delete article.thumbnail
+        article.extract = article.extract.slice(0, 200) + '...'
+          return article
+      })
+  
+      renderArticles(res)
+    }
+
+  }
 }
