@@ -81,6 +81,9 @@ nav a {
   line-height: 1.5;
   transition: transform 0.1s ease-in;
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  max-height: 127px;
+  overflow: hidden;
+
 }
 .wrapper article:hover {
   transform: scale(1.02);
