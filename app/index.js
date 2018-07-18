@@ -178,9 +178,7 @@ async function isArticleSaved(article) {
 async function handleNetworkChange(event) {
   const isOnline = event.type === 'online'? true: false
 
-  if (isOnline) {
-
-  } else {
+  if (!isOnline) {
     const prmt = confirm('you\'re offline! read offline articles?')
     if (prmt) {
       const res = await dbPromise.then(async db => {
@@ -190,13 +188,11 @@ async function handleNetworkChange(event) {
         return result
       })
   
-      const l =   res.map(article => {
-        delete article.thumbnail
-        article.extract = article.extract.slice(0, 200) + '...'
+      const articles  =   res.map(article => {
+        delete article.thumbnail //images aren't saved for offline use
           return article
       })
-  
-      renderArticles(res)
+      renderArticles(articles)
     }
 
   }
