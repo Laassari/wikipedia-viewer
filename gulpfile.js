@@ -45,9 +45,9 @@ gulp.task('lint', (done) =>{
   .pipe(eslint.failAfterError())
 })
 
-//copy SW.js
+//copy SW.js and manifest
 gulp.task('sw', (done) => {
-  gulp.src('app/sw.js')
+  gulp.src(['app/sw.js', 'app/manifest.json'])
       .pipe(gulp.dest('dist'))
       done()
 })
@@ -84,6 +84,16 @@ gulp.task('copy-images', (done) => {
     .pipe(gulp.dest('dist'))
 })
 
+//copy icons
+gulp.task('copy-icons', (done) => {
+  return gulp.src('app/icons/*.png')
+    .pipe(imagemin([
+      imagemin.optipng({optimizationLevel: 5})
+    ]))
+    .pipe(gulp.dest('dist/icons'))
+})
+
+
 //clean dist folder
 gulp.task('clean', (done) => {
   return gulp.src('dist', {
@@ -93,11 +103,11 @@ gulp.task('clean', (done) => {
 })
 
 //build
-gulp.task('build', gulp.series('clean', 'styles', 'copy-images', 'html', 'lint', 'sw', 'uglify', 'serve'))
 
-gulp.task('default', gulp.series('styles', 'copy-images', 'html', 'lint', 'sw', 'uglify', 'lint'))
+gulp.task('default', gulp.series('styles', 'copy-images', 'copy-icons', 'html', 'lint', 'sw', 'uglify', 'lint'))
 gulp.task('watch', () => {
   gulp.watch(['app/*.js'], gulp.series('uglify', 'sw', 'serve'))
   gulp.watch(['app/*.css'], gulp.series('styles', 'serve'))
   gulp.watch(['app/*.html'], gulp.series('html', 'serve'))
 })
+gulp.task('build', gulp.series('clean', 'styles', 'copy-images', 'copy-icons', 'html', 'lint', 'sw', 'uglify', 'serve', 'watch'))
