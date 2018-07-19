@@ -207,5 +207,10 @@ async function showSavedArticles() {
     delete article.thumbnail //images aren't saved for offline use
       return article
   })
-  renderArticles(articles)
+
+  if (articles.length === 0) {
+    htmlArticlesWrapper.innerHTML = '<b>There are no saved articles</b>'
+  } else {
+    renderArticles(articles)
+  }
 }
