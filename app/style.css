@@ -65,6 +65,22 @@ nav a {
   box-shadow: 1px 1px 1px 0px rgba(102, 51, 153, 0.5), 1px 1px 2px 0px rgba(102, 51, 153, 0.58);
 }
 
+.saved-articles {
+  background: #6390;
+  color: #000;
+  border: 1px solid #0000003b;
+  border-radius: 4px;
+  margin: 0 12px 0 0;
+  align-self: normal;
+  font-size: 1rem;
+  box-shadow: 1px 1px 1px 0 rgba(102,51,153,.5), 1px 1px 2px 0 rgba(102,51,153,.58);
+}
+
+@media screen and (max-width: 400px) {
+  .saved-articles {
+    margin: 10px 20px
+  }
+}
 
 .wrapper {
   margin: 0 auto;

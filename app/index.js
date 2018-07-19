@@ -11,6 +11,7 @@ const backButton = document.querySelector('.back')
 let dbPromise //indexedDB
 let articleObject
 const offlineSwitch = document.getElementById('offline-switch')
+const savedArticlesBtn = document.getElementById('saved-articles')
 
 searchButton.addEventListener('click', () => handleSearch (searchInput.value))
 
@@ -41,6 +42,11 @@ backButton.addEventListener('click', () => { //hide the full article
 //offline/online state
 addEventListener('online', handleNetworkChange)
 addEventListener('offline', handleNetworkChange)
+
+//show saved articles
+savedArticlesBtn.addEventListener('click', () => {
+  showSavedArticles()
+})
 
 // Service worker stuff 💪 💪
 if ('serviceWorker' in navigator) {
@@ -181,19 +187,25 @@ async function handleNetworkChange(event) {
   if (!isOnline) {
     const prmt = confirm('you\'re offline! read offline articles?')
     if (prmt) {
-      const res = await dbPromise.then(async db => {
-        const tx = db.transaction('article', 'readonly')
-        const store = tx.objectStore('article')
-        let result = await store.getAll()
-        return result
-      })
-  
-      const articles  =   res.map(article => {
-        delete article.thumbnail //images aren't saved for offline use
-          return article
-      })
-      renderArticles(articles)
+      showSavedArticles()
     }
 
   }
+}
+
+
+async function showSavedArticles() {
+
+  const res = await dbPromise.then(async db => {
+    const tx = db.transaction('article', 'readonly')
+    const store = tx.objectStore('article')
+    let result = await store.getAll()
+    return result
+  })
+
+  const articles  =   res.map(article => {
+    delete article.thumbnail //images aren't saved for offline use
+      return article
+  })
+  renderArticles(articles)
 }
