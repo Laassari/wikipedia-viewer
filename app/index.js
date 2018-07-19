@@ -97,7 +97,7 @@ async function renderFullArticle(articleObj={}) {
   }
 
   hero.style.backgroundImage = `linear-gradient( #5454544f, #000000ab ), 
-                          url(${ articleObj.thumbnail || 'default.png'})`
+                          url(${ articleObj.thumbnail.source || 'default.png'})`
   headding.textContent = articleObj.title
   fullArticle.innerHTML = articleObj.extract
 
