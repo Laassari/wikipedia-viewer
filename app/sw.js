@@ -1,4 +1,5 @@
-const cacheName = 'wiki-1'
+const version = 2
+const cacheName = `wiki-${version}`
 const filesToCache = [
   '/',
   'style.css',
@@ -10,6 +11,23 @@ addEventListener('install', event => {
   event.waitUntil(
     caches.open(cacheName).then(cache => cache.addAll(filesToCache))
   )
+})
+
+
+self.addEventListener('activate', event => {
+
+  //remove old files
+  event.waitUntil(
+    caches.keys().then( keyList => {
+      return Promise.all(keyList.map( key => {
+        if (key !== cacheName) {
+          return caches.delete(key)
+        }
+      }))
+    })
+  )
+
+  return self.clients.claim()
 })
 
 addEventListener('fetch', event => { //return a copy from the cache or fire a new request
