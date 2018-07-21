@@ -142,6 +142,10 @@ footer a {
   box-shadow: 0 0 1px 0px #00000033, 
               0 0 3px 0px #0000003b, 
               0 0 10px 0px #000000a8;
+  top: 0;
+  bottom: 0;
+  position: fixed;
+  overflow-y: auto;
 }
 .full-article-expand {
   transform: scale(1, 1)
